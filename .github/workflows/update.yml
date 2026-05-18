@@ -1,0 +1,48 @@
+name: Update Dashboard
+
+on:
+  schedule:
+    # Every Monday at 9:00 AM UTC (= 2:00 AM PT / 5:00 AM ET)
+    - cron: '0 9 * * 1'
+  workflow_dispatch:    # manual trigger from the Actions tab
+  pull_request:         # run tests on PRs that touch the scripts
+    paths:
+      - 'update_dashboard.py'
+      - 'news_fetcher.py'
+      - 'test_update_dashboard.py'
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install requests feedparser pytest
+      - run: python -m pytest test_update_dashboard.py -v
+
+  update:
+    # Only run the auto-update on schedule or manual trigger, not on PRs
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install requests feedparser
+      - run: python update_dashboard.py
+      - name: Commit changes if any
+        run: |
+          git config user.name "dashboard-bot"
+          git config user.email "dashboard-bot@users.noreply.github.com"
+          git add index.html
+          if git diff --staged --quiet; then
+            echo "No changes — skipping commit"
+          else
+            git commit -m "Auto-update schedule and news ($(date -u +%Y-%m-%d))"
+            git push
+          fi
