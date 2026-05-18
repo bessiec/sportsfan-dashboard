@@ -2,7 +2,7 @@
 
 A personal sports dashboard you can host for free on GitHub Pages. Tracks your teams' schedules and news headlines in one place — filterable by team, tabbed between schedule and news. **Both auto-update weekly via GitHub Actions.**
 
-**[→ See a live example](https://your-username.github.io/fan-dashboard)**
+**[→ See a live example](https://bessiec.github.io/sportsfan-dashboard)**
 
 ---
 
