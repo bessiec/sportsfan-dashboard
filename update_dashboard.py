@@ -175,7 +175,7 @@ def fetch_team_schedule(team_key, team_config):
     events = data.get("events", [])
     games = []
     now = datetime.now(timezone.utc)
-    horizon = now + timedelta(days=7)
+    horizon = now + timedelta(days=10)
 
     for event in events:
         try:

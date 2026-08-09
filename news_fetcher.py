@@ -25,11 +25,11 @@ NEWS_FEEDS = {
     "lakers":   ("Silver Screen & Roll",  "https://www.silverscreenandroll.com/rss/index.xml"),
     "dodgers":  ("True Blue LA",          "https://www.truebluela.com/rss/index.xml"),
     "madrid":   ("Managing Madrid",       "https://www.managingmadrid.com/rss/index.xml"),
-    "nycfc":    ("Hudson River Blue",     "https://www.hudsonriverblue.com/rss/index.xml"),
-    "acfc":     ("Angels on Parade",      "https://angelsonparade.com/feed/"),
-    "ucla":     ("Bruins Nation",         "https://www.bruinsnation.com/rss/index.xml"),
-    "usc":      ("Conquest Chronicles",   "https://www.conquestchronicles.com/rss/index.xml"),
-    "ucdavis":  ("UC Davis Athletics",    "https://ucdavisaggies.com/rss.aspx"),  # may not exist; will fail gracefully
+    "nycfc":    ("NYCFC Official",        "https://www.nycfc.com/rss.xml"),
+    "acfc":     ("Angels on Parade",      "https://angelsonparade.com/feed"),  # no trailing slash
+    "ucla":     ("UCLA Bruins",           "https://uclabruins.com/services/rss.aspx?rss=1"),
+    "usc":      ("USC Trojans",           "https://usctrojans.com/services/rss.aspx?rss=1"),
+    "ucdavis":  ("UC Davis Aggies",       "https://ucdavisaggies.com/services/rss.aspx?rss=1"),
 }
 
 # Same browser-style UA we use for ESPN — some sites block bare python-requests/feedparser UAs
