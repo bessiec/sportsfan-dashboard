@@ -1,3 +1,8 @@
+# NOTE: This script no longer runs automatically. It used to run weekly from a
+# GitHub Action, but ESPN started returning 403 Forbidden for requests from
+# GitHub Actions IPs. I chose to update the dashboard by hand each week instead
+# of working around that block. Kept here as a record of the automation attempt.
+
 """
 test_update_dashboard.py
 ------------------------

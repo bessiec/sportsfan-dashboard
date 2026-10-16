@@ -1,3 +1,8 @@
+# NOTE: This script no longer runs automatically. It used to run weekly from a
+# GitHub Action, but ESPN started returning 403 Forbidden for requests from
+# GitHub Actions IPs. I chose to update the dashboard by hand each week instead
+# of working around that block. Kept here as a record of the automation attempt.
+
 """
 update_dashboard.py
 -------------------
@@ -5,7 +10,7 @@ Fetches the next 7 days of games for each of my teams from ESPN's public API,
 then rewrites the SCHEDULE block in index.html with the fresh data.
 
 Run manually:   python update_dashboard.py
-Run in CI:      called by .github/workflows/update.yml every Monday at 9am UTC
+Run in CI:      (retired) was called weekly by a GitHub Action, now removed
 
 WHY THIS DESIGN:
 - No API keys: ESPN's site.api.espn.com endpoints are public and don't require auth
