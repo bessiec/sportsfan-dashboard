@@ -50,7 +50,7 @@ Once spoofing was off the table, I looked at three options:
 
 1. **TheSportsDB (free tier).** It's a community-run sports database with a real, documented API. But the free tier is limited, and its coverage of college teams and some leagues was spotty for my mix of teams.
 2. **MySportsFeeds (about $10/month).** It's a proper paid API with clear terms. But $120 a year is a lot for a page only I look at, and I'd still need separate sources for soccer and news.
-3. **Manual refresh with Claude.** Once a week, I ask Claude for an updated `index.html` with the coming week's games and recent headlines, then commit it myself.
+3. **Manual refresh with Claude.** Once a week, I have Claude look up the coming week's games and headlines and update `index.html`. I review the change before it goes live.
 
 ## Why Manual Won
 
@@ -65,22 +65,16 @@ The automation was fun to build. But it solved a problem I didn't really have. S
 
 ## What the Weekly Workflow Looks Like
 
+I saved the weekly update as a Claude Code routine: a prompt plus my repo, which runs in the cloud when I tell it to. It never runs on its own.
+
 Every Sunday:
 
-1. I ask Claude for a refreshed `index.html` with the coming week's schedule and the latest news for my teams.
-2. I download the file and drop it into my local copy of the repo.
-3. I open it in my browser to check it looks right.
-4. I commit and push:
+1. I open the routine at claude.ai/code/routines and tap **Run now**.
+2. Claude looks up the week's games and headlines on team and league sites (never ESPN), updates the schedule and news sections of `index.html`, and opens a pull request. The description lists anything it couldn't confirm, like a kickoff time that sources disagree on.
+3. I skim the pull request on GitHub and check anything flagged.
+4. I tap **Merge**. About a minute later, GitHub Pages has the new version live.
 
-   ```bash
-   git add index.html
-   git commit -m "Weekly update"
-   git push
-   ```
-
-5. About 30 seconds later, GitHub Pages has the new version live.
-
-That's all.
+It's still manual in the way that matters to me: nothing runs unless I start it, and nothing goes live until I've looked at it.
 
 ## Build Your Own
 
@@ -89,7 +83,7 @@ The repo is at **[github.com/bessiec/sportsfan-dashboard](https://github.com/bes
 1. Fork the repo.
 2. In `index.html`, change the team list, filter buttons, and badge colors to match your teams. The README walks through each spot.
 3. Turn on GitHub Pages: **Settings → Pages → Deploy from branch → main → / (root) → Save**.
-4. Each week, update the schedule and news sections of `index.html` (by hand, or by asking Claude) and push.
+4. Each week, update the schedule and news sections of `index.html` and push. You can do it by hand, ask Claude, or set up a routine like mine.
 
 The old Python scripts are still in the repo as a record of the automation attempt. They don't run on their own anymore.
 
