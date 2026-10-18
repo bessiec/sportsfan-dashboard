@@ -11,6 +11,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 h1 { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
 .week-sub { font-size: 13px; color: #aaa; }
 .updated { font-size: 11px; color: #aaa; margin-top: 2px; }
+.stale { font-size: 12px; color: #b45309; margin-top: 6px; }
+.howto { font-size: 12px; color: #777; margin-top: 6px; }
+.howto summary { cursor: pointer; color: #1a56db; width: fit-content; }
+.howto ol { margin: 6px 0 4px 18px; line-height: 1.6; }
+.howto p { margin-top: 4px; }
+.howto a { color: #1a56db; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 7px; margin: 1rem 0; padding-bottom: 1rem; border-bottom: 1px solid #ebebeb; }
 .filter-btn { font-size: 12px; padding: 5px 13px; border-radius: 999px; border: 1px solid #ddd; background: #fff; color: #666; cursor: pointer; transition: all 0.15s; }
@@ -34,6 +40,7 @@ h1 { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
 .badge-madrid  { background: #FEBE10; color: #00529F; }
 .badge-nycfc   { background: #6CACE4; color: #003087; }
 .badge-acfc    { background: #F05A28; color: #ffffff; }
+.badge-gotham  { background: #000000; color: #9BD3F0; }
 .badge-ucla    { background: #2D68C4; color: #FFD100; }
 .badge-usc     { background: #990000; color: #FFC72C; }
 .badge-ucdavis { background: #022851; color: #DAAA00; }
@@ -69,8 +76,18 @@ h1 { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
 <div class="dash">
 
   <h1>My Fan Dashboard</h1>
-  <div class="week-sub">Auto-updates weekly</div>
+  <div class="week-sub">Updated by hand each week</div>
   <div class="updated" id="updated"></div>
+  <div class="stale" id="stale" hidden></div>
+  <details class="howto" id="howto">
+    <summary>How to update</summary>
+    <ol>
+      <li>Open <a href="https://claude.ai/code/routines" target="_blank" rel="noopener">claude.ai/code/routines</a> → <b>Weekly dashboard update</b> → <b>Run now</b>.</li>
+      <li>In about 10 minutes, a pull request shows up on <a href="https://github.com/bessiec/sportsfan-dashboard/pulls" target="_blank" rel="noopener">GitHub</a>. Open it and tap <b>Preview this week's dashboard</b>.</li>
+      <li>Check anything marked ⚠️, then tap <b>Merge pull request</b>. The site updates about a minute later.</li>
+    </ol>
+    <p>No routine handy? Open the repo in Claude Code and say "do the weekly dashboard update." Never use ESPN data.</p>
+  </details>
 
   <div class="filters" id="filters">
     <button class="filter-btn active" data-t="all">All</button>
@@ -79,6 +96,7 @@ h1 { font-size: 20px; font-weight: 600; margin-bottom: 3px; }
     <button class="filter-btn" data-t="madrid">Real Madrid</button>
     <button class="filter-btn" data-t="nycfc">NYCFC</button>
     <button class="filter-btn" data-t="acfc">Angel City</button>
+    <button class="filter-btn" data-t="gotham">Gotham FC</button>
     <button class="filter-btn" data-t="ucla">UCLA</button>
     <button class="filter-btn" data-t="usc">USC</button>
     <button class="filter-btn" data-t="ucdavis">UC Davis</button>
@@ -103,13 +121,14 @@ const TEAMS = {
   madrid:  { label:'RMA', badge:'badge-madrid',  pro: true },
   nycfc:   { label:'NYC', badge:'badge-nycfc',   pro: true },
   acfc:    { label:'ACFC',badge:'badge-acfc',    pro: true },
+  gotham:  { label:'GFC', badge:'badge-gotham',  pro: true },
   ucla:    { label:'UCLA',badge:'badge-ucla',    college: true },
   usc:     { label:'USC', badge:'badge-usc',     college: true },
   ucdavis: { label:'UCD', badge:'badge-ucdavis', college: true },
 };
 
 // =======================================================
-//  SCHEDULE — Auto-updated weekly by GitHub Action
+//  SCHEDULE — Updated each week by the Claude routine (see README)
 //  DO NOT EDIT between the markers below — your changes will be overwritten
 // =======================================================
 // ─── BEGIN AUTO-GENERATED SCHEDULE ───
@@ -242,7 +261,7 @@ const LAST_UPDATED = 'Oct 12, 2026 at 06:47 PM UTC';
 // ─── END AUTO-GENERATED SCHEDULE ───
 
 // =======================================================
-//  NEWS — Auto-updated weekly by GitHub Action from team RSS feeds
+//  NEWS — Updated each week by the Claude routine (see README)
 //  DO NOT EDIT between the markers below — your changes will be overwritten
 // =======================================================
 // ─── BEGIN AUTO-GENERATED NEWS ───
@@ -392,10 +411,19 @@ function renderNews() {
     html += '</div>';
   });
 
-  panel.innerHTML = html || '<div class="no-games">No news fetched yet. Run the workflow to populate.</div>';
+  panel.innerHTML = html || '<div class="no-games">No news yet. Run the weekly update to add headlines.</div>';
 }
 
 document.getElementById('updated').textContent = 'Schedule updated: ' + LAST_UPDATED;
+
+// Nudge when the data is a week old or more
+const daysOld = Math.floor((Date.now() - new Date(LAST_UPDATED.split(' at ')[0])) / 86400000);
+if (daysOld >= 7) {
+  const stale = document.getElementById('stale');
+  stale.textContent = 'Last updated ' + daysOld + " days ago. Time for this week's update.";
+  stale.hidden = false;
+  document.getElementById('howto').open = true;
+}
 
 document.getElementById('filters').addEventListener('click', e => {
   const btn = e.target.closest('.filter-btn'); if (!btn) return;
